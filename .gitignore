@@ -1,1 +1,7 @@
- 
+.*
+*.txt
+
+build/
+run/
+
+src/test/
