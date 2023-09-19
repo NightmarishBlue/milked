@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "blue.nightmarish.milked.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "entity.MilkableCow"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "model.CowEatAnim"
+  ]
+}
