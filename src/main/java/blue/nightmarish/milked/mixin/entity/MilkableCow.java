@@ -1,6 +1,8 @@
 package blue.nightmarish.milked.mixin.entity;
 
 import blue.nightmarish.milked.IMilkableCow;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,11 +39,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
+import static blue.nightmarish.milked.MilkedMod.offset;
+import static blue.nightmarish.milked.MilkedMod.spread;
+
 @Mixin(Cow.class)
 public abstract class MilkableCow extends Animal implements IMilkableCow {
+    @Unique
     private static final int EAT_ANIMATION_TICKS = 40;
     private static final EntityDataAccessor<Boolean> DATA_HAS_MILK = SynchedEntityData.defineId(MilkableCow.class, EntityDataSerializers.BOOLEAN);
+    @Unique
     private int eatAnimationTick;
+    @Unique
     private EatBlockGoal eatBlockGoal;
 
     public MilkableCow(EntityType<? extends Cow> pEntityType, Level pLevel) {
@@ -59,7 +68,7 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(DATA_HAS_MILK, false);
+        this.entityData.define(DATA_HAS_MILK, true);
     }
 
     @Override
@@ -167,7 +176,7 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putBoolean("Milk", this.hasMilk());
+        pCompound.putBoolean("HasMilk", this.hasMilk());
     }
 
     /**
@@ -175,6 +184,23 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
      */
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.setMilk(pCompound.getBoolean("Milk"));
+        this.setMilk(pCompound.getBoolean("HasMilk"));
+    }
+
+    public void tick() {
+        super.tick();
+        if (!this.isBaby() && this.hasMilk() && this.random.nextFloat() < 0.025F) {
+            // calculate the angle of its body and offset it by some amount.
+            float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
+            double x = this.getX() + Mth.cos(angleRad) * offset;
+            double z = this.getZ() + Mth.sin(angleRad) * offset;
+            for (int i = 0; i < this.random.nextInt(3) + 1; ++i) {
+                this.spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), ParticleTypes.FALLING_WATER);
+            }
+        }
+    }
+
+    private void spawnFluidParticle(Level pLevel, double pStartX, double pEndX, double pStartZ, double pEndZ, double pPosY, ParticleOptions pParticleOption) {
+        pLevel.addParticle(pParticleOption, Mth.lerp(pLevel.random.nextDouble(), pStartX, pEndX), pPosY, Mth.lerp(pLevel.random.nextDouble(), pStartZ, pEndZ), 0.0D, 0.0D, 0.0D);
     }
 }
