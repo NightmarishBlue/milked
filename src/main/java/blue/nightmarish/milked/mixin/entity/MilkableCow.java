@@ -1,8 +1,8 @@
 package blue.nightmarish.milked.mixin.entity;
 
 import blue.nightmarish.milked.IMilkableCow;
+import blue.nightmarish.milked.particle.MilkedModParticles;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -195,7 +195,7 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
             double x = this.getX() + Mth.cos(angleRad) * offset;
             double z = this.getZ() + Mth.sin(angleRad) * offset;
             for (int i = 0; i < this.random.nextInt(3) + 1; ++i) {
-                this.spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), ParticleTypes.FALLING_WATER);
+                this.spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), MilkedModParticles.FALLING_MILK.get());
             }
         }
     }

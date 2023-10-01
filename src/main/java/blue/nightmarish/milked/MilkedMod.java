@@ -1,11 +1,14 @@
 package blue.nightmarish.milked;
 
 import blue.nightmarish.milked.particle.MilkedModParticles;
+import blue.nightmarish.milked.particle.custom.MilkDripParticle;
+import blue.nightmarish.milked.particle.custom.MilkSplashParticle;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -85,13 +88,18 @@ public class MilkedMod
             //LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
     }
-//
-//    // i got no idea what the difference here is
-//    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-//    public class ModEventBusEvents {
-//        @SubscribeEvent
-//        public static void registerParticleFactories(final )
-//    }
+
+    // i got no idea what the difference here is
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+    public class ModEventBusEvents {
+        @SubscribeEvent
+        public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
+//            Minecraft.getInstance().particleEngine.register(MilkedModParticles.FALLING_MILK,
+//                    LiquidSplashParticle.Provider::new);
+            event.register(MilkedModParticles.FALLING_MILK.get(), MilkDripParticle.MilkFallProvider::new);
+            event.register(MilkedModParticles.MILK_SPLASH.get(), MilkSplashParticle.Provider::new);
+        }
+    }
 
     public static final double offset = 0.5;
     public static final double spread = 0.2;
