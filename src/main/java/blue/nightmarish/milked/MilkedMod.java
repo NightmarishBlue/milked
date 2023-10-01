@@ -87,11 +87,7 @@ public class MilkedMod
             //LOGGER.info("HELLO FROM CLIENT SETUP");
             //LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
         }
-    }
 
-    // i got no idea what the difference here is
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-    public class ModEventBusEvents {
         @SubscribeEvent
         public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
 //            Minecraft.getInstance().particleEngine.register(MilkedModParticles.FALLING_MILK,
