@@ -24,13 +24,13 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -51,6 +51,8 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     private int eatAnimationTick;
     @Unique
     private EatBlockGoal eatBlockGoal;
+    private static final Item MILK_ITEM = Items.BUCKET;
+    //private static final Item RETURNED_ITEM = Items.MILK_BUCKET;
 
     public MilkableCow(EntityType<? extends Cow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -137,19 +139,14 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
         }
     }
 
-    /**
-     * @author blue
-     * @reason decided best way to alter the branch was to wipe the slate and inject my own
-     */
-    @Overwrite
-    public InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-            return super.mobInteract(pPlayer, pHand);
-    }
-
     @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
     public void onMobInteract(Player pPlayer, InteractionHand pHand, CallbackInfoReturnable<InteractionResult> cir) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
-        if (itemstack.is(Items.BUCKET) && !this.isBaby() && this.hasMilk()) {
+        if (itemstack.is(MILK_ITEM)) {
+            if (this.isBaby() || !this.hasMilk()) {
+                cir.setReturnValue(super.mobInteract(pPlayer, pHand));
+                return;
+            }
             pPlayer.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
             ItemStack itemstack1 = ItemUtils.createFilledResult(itemstack, pPlayer, Items.MILK_BUCKET.getDefaultInstance());
             pPlayer.setItemInHand(pHand, itemstack1);
@@ -157,7 +154,6 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
             cir.setReturnValue(InteractionResult.sidedSuccess(this.level.isClientSide));
         }
     }
-
 
     @Override
     @Nullable
