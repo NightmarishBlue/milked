@@ -7,12 +7,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnGroupData;
@@ -32,6 +31,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -159,12 +159,23 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
-    @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/Cow;", at = @At("TAIL"), cancellable = true)
-    public void onGetBreedOffspring(ServerLevel pLevel, AgeableMob pOtherParent, CallbackInfoReturnable<Cow> cir) {
-        Cow cow = EntityType.COW.create(pLevel);
-        // assert cow != null; // im pretty sure the cow exists guys.
-        ((IMilkableCow) cow).milked$setMilk(true);
-        cir.setReturnValue(cow);
+//    @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/Cow;", at = @At("TAIL"), cancellable = true)
+//    public void onGetBreedOffspring(ServerLevel pLevel, AgeableMob pOtherParent, CallbackInfoReturnable<Cow> cir) {
+//        Cow cow = EntityType.COW.create(pLevel);
+//        // assert cow != null; // im pretty sure the cow exists guys.
+//        ((IMilkableBehavior) cow).milked$setMilk(true);
+//        cir.setReturnValue(cow);
+//    }
+
+    @Redirect(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/Cow;",
+            at = @At(value = "INVOKE",
+                    target = "Lnet/minecraft/world/entity/EntityType;create(Lnet/minecraft/world/level/Level;)Lnet/minecraft/world/entity/Entity;"
+            )
+    )
+    public Entity modifyBreedOffspring(EntityType<Cow> instance, Level pLevel) {
+        Cow offspring = instance.create(pLevel);
+        ((IMilkableCow) offspring).milked$setMilk(true);
+        return offspring;
     }
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
