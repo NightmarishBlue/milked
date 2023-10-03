@@ -44,11 +44,14 @@ import static blue.nightmarish.milked.MilkedMod.spread;
 public abstract class MilkableCow extends Animal implements IMilkableCow {
     @Unique
     private static final int EAT_ANIMATION_TICKS = 40;
+
+    @Unique
     private static final EntityDataAccessor<Boolean> DATA_HAS_MILK = SynchedEntityData.defineId(MilkableCow.class, EntityDataSerializers.BOOLEAN);
     @Unique
-    private int eatAnimationTick;
+    private int milked$eatAnimationTick;
     @Unique
-    private EatBlockGoal eatBlockGoal;
+    private EatBlockGoal milked$eatBlockGoal;
+    @Unique
     private static final Item MILK_ITEM = Items.BUCKET;
     //private static final Item RETURNED_ITEM = Items.MILK_BUCKET;
 
@@ -58,8 +61,8 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
 
     @Inject(method = "registerGoals", at = @At("RETURN"))
     void onRegisterGoals(CallbackInfo ci) {
-        this.eatBlockGoal = new EatBlockGoal(this);
-        this.goalSelector.addGoal(5, this.eatBlockGoal);
+        this.milked$eatBlockGoal = new EatBlockGoal(this);
+        this.goalSelector.addGoal(5, this.milked$eatBlockGoal);
         this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
@@ -73,14 +76,14 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
 
     @Override
     protected void customServerAiStep() {
-        this.eatAnimationTick = this.eatBlockGoal.getEatAnimationTick();
+        this.milked$eatAnimationTick = this.milked$eatBlockGoal.getEatAnimationTick();
         super.customServerAiStep();
     }
 
     @Override
     public void aiStep() {
         if (this.level.isClientSide) {
-            this.eatAnimationTick = Math.max(0, this.eatAnimationTick - 1);
+            this.milked$eatAnimationTick = Math.max(0, this.milked$eatAnimationTick - 1);
         }
         super.aiStep();
     }
@@ -92,17 +95,17 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     @Override
     public void ate() {
         super.ate();
-        this.setMilk(true);
+        this.milked$setMilk(true);
         if (this.isBaby()) {
             this.ageUp(20);
         }
     }
 
-    public boolean hasMilk() {
+    public boolean milked$hasMilk() {
         return this.entityData.get(DATA_HAS_MILK);
     }
 
-    public void setMilk(boolean desiredState) {
+    public void milked$setMilk(boolean desiredState) {
         this.entityData.set(DATA_HAS_MILK, desiredState);
     }
 
@@ -112,28 +115,28 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     @Override
     public void handleEntityEvent(byte pId) {
         if (pId == 10) {
-            this.eatAnimationTick = 40;
+            this.milked$eatAnimationTick = 40;
         } else {
             super.handleEntityEvent(pId);
         }
     }
 
-    public float getHeadEatPositionScale(float pPartialTick) {
-        if (this.eatAnimationTick <= 0) {
+    public float milked$getHeadEatPositionScale(float pPartialTick) {
+        if (this.milked$eatAnimationTick <= 0) {
             return 0.0F;
-        } else if (this.eatAnimationTick >= 4 && this.eatAnimationTick <= 36) {
+        } else if (this.milked$eatAnimationTick >= 4 && this.milked$eatAnimationTick <= 36) {
             return 1.0F;
         } else {
-            return this.eatAnimationTick < 4 ? ((float)this.eatAnimationTick - pPartialTick) / 4.0F : -((float)(this.eatAnimationTick - 40) - pPartialTick) / 4.0F;
+            return this.milked$eatAnimationTick < 4 ? ((float)this.milked$eatAnimationTick - pPartialTick) / 4.0F : -((float)(this.milked$eatAnimationTick - 40) - pPartialTick) / 4.0F;
         }
     }
 
-    public float getHeadEatAngleScale(float pPartialTick) {
-        if (this.eatAnimationTick > 4 && this.eatAnimationTick <= 36) {
-            float f = ((float)(this.eatAnimationTick - 4) - pPartialTick) / 32.0F;
+    public float milked$getHeadEatAngleScale(float pPartialTick) {
+        if (this.milked$eatAnimationTick > 4 && this.milked$eatAnimationTick <= 36) {
+            float f = ((float)(this.milked$eatAnimationTick - 4) - pPartialTick) / 32.0F;
             return ((float)Math.PI / 5F) + 0.21991149F * Mth.sin(f * 28.7F);
         } else {
-            return this.eatAnimationTick > 0 ? ((float)Math.PI / 5F) : this.getXRot() * ((float)Math.PI / 180F);
+            return this.milked$eatAnimationTick > 0 ? ((float)Math.PI / 5F) : this.getXRot() * ((float)Math.PI / 180F);
         }
     }
 
@@ -141,18 +144,18 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     public void onMobInteract(Player pPlayer, InteractionHand pHand, CallbackInfoReturnable<InteractionResult> cir) {
         ItemStack itemstack = pPlayer.getItemInHand(pHand);
         if (itemstack.is(MILK_ITEM)) {
-            if (this.isBaby() || !this.hasMilk()) {
+            if (this.isBaby() || !this.milked$hasMilk()) {
                 cir.setReturnValue(super.mobInteract(pPlayer, pHand));
                 return;
             }
-            this.setMilk(false);
+            this.milked$setMilk(false);
         }
     }
 
     @Override
     @Nullable
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        this.setMilk(true);
+        this.milked$setMilk(true);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
 
@@ -160,13 +163,13 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     public void onGetBreedOffspring(ServerLevel pLevel, AgeableMob pOtherParent, CallbackInfoReturnable<Cow> cir) {
         Cow cow = EntityType.COW.create(pLevel);
         // assert cow != null; // im pretty sure the cow exists guys.
-        ((IMilkableCow) cow).setMilk(true);
+        ((IMilkableCow) cow).milked$setMilk(true);
         cir.setReturnValue(cow);
     }
 
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
-        pCompound.putBoolean("HasMilk", this.hasMilk());
+        pCompound.putBoolean("HasMilk", this.milked$hasMilk());
     }
 
     /**
@@ -174,23 +177,24 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
      */
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.setMilk(pCompound.getBoolean("HasMilk"));
+        this.milked$setMilk(pCompound.getBoolean("HasMilk"));
     }
 
     public void tick() {
         super.tick();
-        if (!this.isBaby() && this.hasMilk() && this.random.nextFloat() < 0.025F) {
+        if (!this.isBaby() && this.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
             // calculate the angle of its body and offset it by some amount.
             float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
             double x = this.getX() + Mth.cos(angleRad) * offset;
             double z = this.getZ() + Mth.sin(angleRad) * offset;
             for (int i = 0; i < this.random.nextInt(3) + 1; ++i) {
-                this.spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), MilkedModParticles.FALLING_MILK.get());
+                this.milked$spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), MilkedModParticles.FALLING_MILK.get());
             }
         }
     }
 
-    private void spawnFluidParticle(Level pLevel, double pStartX, double pEndX, double pStartZ, double pEndZ, double pPosY, ParticleOptions pParticleOption) {
+    @Unique
+    private void milked$spawnFluidParticle(Level pLevel, double pStartX, double pEndX, double pStartZ, double pEndZ, double pPosY, ParticleOptions pParticleOption) {
         pLevel.addParticle(pParticleOption, Mth.lerp(pLevel.random.nextDouble(), pStartX, pEndX), pPosY, Mth.lerp(pLevel.random.nextDouble(), pStartZ, pEndZ), 0.0D, 0.0D, 0.0D);
     }
 }
