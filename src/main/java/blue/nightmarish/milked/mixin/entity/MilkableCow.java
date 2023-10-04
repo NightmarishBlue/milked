@@ -39,21 +39,21 @@ import static blue.nightmarish.milked.MilkedMod.spread;
 
 @Mixin(Cow.class)
 public abstract class MilkableCow extends Animal implements IMilkableBehavior {
+    public MilkableCow(EntityType<? extends Cow> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+    }
     @Unique
     private static final int EAT_ANIMATION_TICKS = 40;
-
     @Unique
     private static final EntityDataAccessor<Boolean> DATA_HAS_MILK = SynchedEntityData.defineId(MilkableCow.class, EntityDataSerializers.BOOLEAN);
     @Unique
     private int milked$eatAnimationTick;
     @Unique
     private EatBlockGoal milked$eatBlockGoal;
-    @Unique
-    private static final Item MILK_ITEM = Items.BUCKET;
-    //private static final Item RETURNED_ITEM = Items.MILK_BUCKET;
 
-    public MilkableCow(EntityType<? extends Cow> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    @Unique
+    public Item milked$getMilkItem() {
+        return Items.BUCKET;
     }
 
     @Inject(method = "registerGoals", at = @At("RETURN"))
@@ -139,7 +139,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
 
     @Redirect(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
     public boolean modifyMobInteract(ItemStack heldItemStack, Item milkBucket) {
-        if (!heldItemStack.is(MILK_ITEM) || !this.milked$hasMilk()) return false;
+        if (!heldItemStack.is(this.milked$getMilkItem()) || !this.milked$hasMilk()) return false;
         this.milked$setMilk(false);
         return true;
     }
