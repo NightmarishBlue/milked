@@ -9,8 +9,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobSpawnType;
@@ -33,7 +31,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
 
@@ -140,16 +137,11 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
         }
     }
 
-    @Inject(method = "mobInteract", at = @At("HEAD"), cancellable = true)
-    public void onMobInteract(Player pPlayer, InteractionHand pHand, CallbackInfoReturnable<InteractionResult> cir) {
-        ItemStack itemstack = pPlayer.getItemInHand(pHand);
-        if (itemstack.is(MILK_ITEM)) {
-            if (this.isBaby() || !this.milked$hasMilk()) {
-                cir.setReturnValue(super.mobInteract(pPlayer, pHand));
-                return;
-            }
-            this.milked$setMilk(false);
-        }
+    @Redirect(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
+    public boolean modifyMobInteract(ItemStack heldItemStack, Item milkBucket) {
+        if (!heldItemStack.is(MILK_ITEM) || !this.milked$hasMilk()) return false;
+        this.milked$setMilk(false);
+        return true;
     }
 
     @Override
@@ -158,14 +150,6 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
         this.milked$setMilk(true);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
     }
-
-//    @Inject(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/Cow;", at = @At("TAIL"), cancellable = true)
-//    public void onGetBreedOffspring(ServerLevel pLevel, AgeableMob pOtherParent, CallbackInfoReturnable<Cow> cir) {
-//        Cow cow = EntityType.COW.create(pLevel);
-//        // assert cow != null; // im pretty sure the cow exists guys.
-//        ((IMilkableBehavior) cow).milked$setMilk(true);
-//        cir.setReturnValue(cow);
-//    }
 
     @Redirect(method = "getBreedOffspring(Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/world/entity/AgeableMob;)Lnet/minecraft/world/entity/animal/Cow;",
             at = @At(value = "INVOKE",
