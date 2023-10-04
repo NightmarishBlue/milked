@@ -139,7 +139,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
 
     @Redirect(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
     public boolean modifyMobInteract(ItemStack heldItemStack, Item milkBucket) {
-        if (!heldItemStack.is(this.milked$getMilkItem()) || !this.milked$hasMilk()) return false;
+        if (!(heldItemStack.is(this.milked$getMilkItem()) && this.milked$hasMilk() && !this.isBaby())) return false;
         this.milked$setMilk(false);
         return true;
     }
