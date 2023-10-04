@@ -1,6 +1,6 @@
 package blue.nightmarish.milked.mixin.entity;
 
-import blue.nightmarish.milked.IMilkableCow;
+import blue.nightmarish.milked.IMilkableBehavior;
 import blue.nightmarish.milked.particle.MilkedModParticles;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -38,7 +38,7 @@ import static blue.nightmarish.milked.MilkedMod.offset;
 import static blue.nightmarish.milked.MilkedMod.spread;
 
 @Mixin(Cow.class)
-public abstract class MilkableCow extends Animal implements IMilkableCow {
+public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     @Unique
     private static final int EAT_ANIMATION_TICKS = 40;
 
@@ -158,7 +158,7 @@ public abstract class MilkableCow extends Animal implements IMilkableCow {
     )
     public Entity modifyBreedOffspring(EntityType<Cow> instance, Level pLevel) {
         Cow offspring = instance.create(pLevel);
-        ((IMilkableCow) offspring).milked$setMilk(true);
+        ((IMilkableBehavior) offspring).milked$setMilk(true);
         return offspring;
     }
 

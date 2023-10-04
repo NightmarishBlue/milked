@@ -1,6 +1,6 @@
 package blue.nightmarish.milked.mixin.model;
 
-import blue.nightmarish.milked.IMilkableCow;
+import blue.nightmarish.milked.IMilkableBehavior;
 import net.minecraft.client.model.CowModel;
 import net.minecraft.client.model.QuadrupedModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(CowModel.class)
-public abstract class CowEatAnim<T extends Entity & IMilkableCow> extends QuadrupedModel<T> {
+public abstract class CowEatAnim<T extends Entity & IMilkableBehavior> extends QuadrupedModel<T> {
     public CowEatAnim(ModelPart pRoot) {
         super(pRoot, false, 10.0F, 4.0F, 2.0F, 2.0F, 24);
     }

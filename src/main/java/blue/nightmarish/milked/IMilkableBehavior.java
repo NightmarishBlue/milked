@@ -1,6 +1,6 @@
 package blue.nightmarish.milked;
 
-public interface IMilkableCow {
+public interface IMilkableBehavior {
     boolean milked$hasMilk();
     void milked$setMilk(boolean desiredState);
     float milked$getHeadEatPositionScale(float pPartialTick);
