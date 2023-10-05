@@ -96,9 +96,9 @@ public class MilkedMod
             event.register(MilkedModParticles.MILK_SPLASH.get(), MilkSplashParticle.Provider::new);
         }
     }
-
-    public static final double offset = 0.5;
-    public static final double spread = 0.2;
+    // constants
+    public static final double PARTICLE_SPAWN_OFFSET = 0.45;
+    public static final double PARTICLE_SPAWN_SPREAD = 0.15;
     public static int getDripLifetime() {
         return new Random().nextInt(3, 10);
     }
