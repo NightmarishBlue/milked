@@ -16,8 +16,7 @@ public class MilkedModParticles {
             PARTICLE_TYPES.register("dripping_milk", () -> new SimpleParticleType(true));
     public static final RegistryObject<SimpleParticleType> FALLING_MILK =
             PARTICLE_TYPES.register("falling_milk", () -> new SimpleParticleType(true));
-
-    public static final RegistryObject<SimpleParticleType> MILK_SPLASH =
+    public static final RegistryObject<SimpleParticleType> SPLASH_MILK =
             PARTICLE_TYPES.register("splash_milk", () -> new SimpleParticleType(true));
 
     public static void register(IEventBus eventBus) {

@@ -92,6 +92,7 @@ public class MilkedMod
         public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
 //            Minecraft.getInstance().particleEngine.register(MilkedModParticles.FALLING_MILK,
 //                    LiquidSplashParticle.Provider::new);
+            event.register(MilkedModParticles.DRIPPING_MILK.get(), MilkDripParticle.MilkHangProvider::new);
             event.register(MilkedModParticles.FALLING_MILK.get(), MilkDripParticle.MilkFallProvider::new);
             event.register(MilkedModParticles.MILK_SPLASH.get(), MilkSplashParticle.Provider::new);
         }
