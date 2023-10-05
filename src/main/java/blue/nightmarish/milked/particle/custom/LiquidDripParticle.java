@@ -1,5 +1,6 @@
 package blue.nightmarish.milked.particle.custom;
 
+import blue.nightmarish.milked.MilkedMod;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
@@ -63,7 +64,7 @@ public class LiquidDripParticle extends TextureSheetParticle {
 
     static class CoolingLiquidDripHangParticle extends LiquidDripHangParticle {
         CoolingLiquidDripHangParticle(ClientLevel p_106068_, double p_106069_, double p_106070_, double p_106071_, ParticleOptions p_106073_) {
-            super(p_106068_, p_106069_, p_106070_, p_106071_, p_106073_);
+            super(p_106068_, p_106069_, p_106070_, p_106071_, p_106073_, MilkedMod.getDripLifetime());
         }
 
         protected void preMoveUpdate() {
@@ -77,11 +78,11 @@ public class LiquidDripParticle extends TextureSheetParticle {
     static class LiquidDripHangParticle extends LiquidDripParticle {
         private final ParticleOptions fallingParticle;
 
-        LiquidDripHangParticle(ClientLevel pLevel, double pX, double pY, double pZ, ParticleOptions pFallingParticle) {
+        LiquidDripHangParticle(ClientLevel pLevel, double pX, double pY, double pZ, ParticleOptions pFallingParticle, int lifetime) {
             super(pLevel, pX, pY, pZ);
             this.fallingParticle = pFallingParticle;
             this.gravity *= 0.02F;
-            this.lifetime = 40;
+            this.lifetime = lifetime;
         }
 
         protected void preMoveUpdate() {

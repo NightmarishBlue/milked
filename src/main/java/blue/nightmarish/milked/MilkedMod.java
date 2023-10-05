@@ -99,4 +99,7 @@ public class MilkedMod
 
     public static final double offset = 0.5;
     public static final double spread = 0.2;
+    public static int getDripLifetime() {
+        return new Random().nextInt(3, 10);
+    }
 }
