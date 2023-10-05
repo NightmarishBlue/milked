@@ -10,6 +10,8 @@ public interface IMilkableBehavior {
     Item milked$getMilkItem();
     EatBlockGoal milked$initGoal();
 
+    ParticleOptions milked$getMilkParticles();
+
     float milked$getHeadEatPositionScale(float pPartialTick);
     float milked$getHeadEatAngleScale(float pPartialTick);
 }

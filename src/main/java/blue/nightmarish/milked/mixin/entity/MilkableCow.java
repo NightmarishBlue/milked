@@ -61,6 +61,10 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
         return Items.BUCKET;
     }
 
+    @Unique
+    public ParticleOptions milked$getMilkParticles() {
+        return MilkedModParticles.DRIPPING_MILK.get();
+    }
     @Inject(method = "registerGoals", at = @At("RETURN"))
     void onRegisterGoals(CallbackInfo ci) {
         this.milked$eatBlockGoal = this.milked$initGoal();
@@ -189,6 +193,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
             double z = this.getZ() + Mth.sin(angleRad) * offset;
             for (int i = 0; i < this.random.nextInt(3) + 1; ++i) {
                 this.milked$spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), MilkedModParticles.FALLING_MILK.get());
+                this.milked$spawnFluidParticle(this.level, x - PARTICLE_SPAWN_SPREAD, x + PARTICLE_SPAWN_SPREAD, z - PARTICLE_SPAWN_SPREAD, z + PARTICLE_SPAWN_SPREAD, this.getY(0.5D), milked$getMilkParticles());
             }
         }
     }
