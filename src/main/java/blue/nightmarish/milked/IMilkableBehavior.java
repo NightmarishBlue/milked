@@ -1,5 +1,6 @@
 package blue.nightmarish.milked;
 
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.world.entity.ai.goal.EatBlockGoal;
 import net.minecraft.world.item.Item;
 
