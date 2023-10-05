@@ -1,6 +1,7 @@
 package blue.nightmarish.milked.mixin.entity;
 
 import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.entity.ai.EatGrassGoal;
 import blue.nightmarish.milked.particle.MilkedModParticles;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -51,6 +52,10 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     @Unique
     private EatBlockGoal milked$eatBlockGoal;
 
+    public EatBlockGoal milked$initGoal() {
+        return new EatGrassGoal(this);
+    }
+
     @Unique
     public Item milked$getMilkItem() {
         return Items.BUCKET;
@@ -58,7 +63,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
 
     @Inject(method = "registerGoals", at = @At("RETURN"))
     void onRegisterGoals(CallbackInfo ci) {
-        this.milked$eatBlockGoal = new EatBlockGoal(this);
+        this.milked$eatBlockGoal = this.milked$initGoal();
         this.goalSelector.addGoal(5, this.milked$eatBlockGoal);
         this.goalSelector.addGoal(6, new WaterAvoidingRandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new LookAtPlayerGoal(this, Player.class, 6.0F));
@@ -87,7 +92,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
 
     /**
      * Restores the cow's milkability, and ages it up slightly. This function is used in the
-     * {@code EatBlockGoal}.
+     * {@code GenericEatBlockGoal}.
      */
     @Override
     public void ate() {

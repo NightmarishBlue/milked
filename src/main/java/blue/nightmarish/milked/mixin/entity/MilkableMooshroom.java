@@ -1,7 +1,9 @@
 package blue.nightmarish.milked.mixin.entity;
 
 import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.entity.ai.EatMyceliumGoal;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.goal.EatBlockGoal;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.MushroomCow;
 import net.minecraft.world.item.Item;
@@ -24,10 +26,16 @@ public abstract class MilkableMooshroom extends Cow implements IMilkableBehavior
         return Items.BOWL;
     }
 
+    @Override
+    public EatBlockGoal milked$initGoal() {
+        return new EatMyceliumGoal(this);
+    }
+
     @Redirect(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
     boolean modifyMobInteract(ItemStack heldItemStack, Item emptyBowl) {
         if (!(heldItemStack.is(this.milked$getMilkItem()) && this.milked$hasMilk() && !this.isBaby())) return false;
         this.milked$setMilk(false);
         return true;
     }
+
 }
