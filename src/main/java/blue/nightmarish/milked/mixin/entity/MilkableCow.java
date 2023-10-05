@@ -35,8 +35,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 
-import static blue.nightmarish.milked.MilkedMod.offset;
-import static blue.nightmarish.milked.MilkedMod.spread;
+import static blue.nightmarish.milked.MilkedMod.PARTICLE_SPAWN_OFFSET;
+import static blue.nightmarish.milked.MilkedMod.PARTICLE_SPAWN_SPREAD;
 
 @Mixin(Cow.class)
 public abstract class MilkableCow extends Animal implements IMilkableBehavior {
@@ -49,6 +49,8 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     private static final EntityDataAccessor<Boolean> DATA_HAS_MILK = SynchedEntityData.defineId(MilkableCow.class, EntityDataSerializers.BOOLEAN);
     @Unique
     private int milked$eatAnimationTick;
+    @Unique
+    private int particleCounter = 0;
     @Unique
     private EatBlockGoal milked$eatBlockGoal;
 
@@ -187,12 +189,13 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     public void tick() {
         super.tick();
         if (!this.isBaby() && this.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
+            if (++this.particleCounter == 5) return;
+
             // calculate the angle of its body and offset it by some amount.
             float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
-            double x = this.getX() + Mth.cos(angleRad) * offset;
-            double z = this.getZ() + Mth.sin(angleRad) * offset;
-            for (int i = 0; i < this.random.nextInt(3) + 1; ++i) {
-                this.milked$spawnFluidParticle(this.level, x - spread, x + spread, z - spread, z + spread, this.getY(0.5D), MilkedModParticles.FALLING_MILK.get());
+            double x = this.getX() + Mth.cos(angleRad) * PARTICLE_SPAWN_OFFSET;
+            double z = this.getZ() + Mth.sin(angleRad) * PARTICLE_SPAWN_OFFSET;
+            for (int i = 0; i < this.random.nextInt(2) + 1; ++i) {
                 this.milked$spawnFluidParticle(this.level, x - PARTICLE_SPAWN_SPREAD, x + PARTICLE_SPAWN_SPREAD, z - PARTICLE_SPAWN_SPREAD, z + PARTICLE_SPAWN_SPREAD, this.getY(0.5D), milked$getMilkParticles());
             }
         }
