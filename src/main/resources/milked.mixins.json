@@ -2,6 +2,7 @@
   "required": true,
   "package": "blue.nightmarish.milked.mixin",
   "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8.0",
   "mixins": [
     "entity.MilkableCow",
     "entity.MilkableMooshroom"
