@@ -3,6 +3,8 @@ package blue.nightmarish.milked;
 import blue.nightmarish.milked.particle.MilkedModParticles;
 import blue.nightmarish.milked.particle.custom.MilkDripParticle;
 import blue.nightmarish.milked.particle.custom.MilkSplashParticle;
+import blue.nightmarish.milked.particle.custom.StewDripParticle;
+import blue.nightmarish.milked.particle.custom.StewSplashParticle;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.world.item.Item;
@@ -20,6 +22,8 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
+
+import java.util.Random;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(MilkedMod.MOD_ID)
@@ -94,7 +98,11 @@ public class MilkedMod
 //                    LiquidSplashParticle.Provider::new);
             event.register(MilkedModParticles.DRIPPING_MILK.get(), MilkDripParticle.MilkHangProvider::new);
             event.register(MilkedModParticles.FALLING_MILK.get(), MilkDripParticle.MilkFallProvider::new);
-            event.register(MilkedModParticles.MILK_SPLASH.get(), MilkSplashParticle.Provider::new);
+            event.register(MilkedModParticles.SPLASH_MILK.get(), MilkSplashParticle.Provider::new);
+
+            event.register(MilkedModParticles.DRIPPING_STEW.get(), StewDripParticle.StewHangProvider::new);
+            event.register(MilkedModParticles.FALLING_STEW.get(), StewDripParticle.StewFallProvider::new);
+            event.register(MilkedModParticles.STEW_SPLASH.get(), StewSplashParticle.Provider::new);
         }
     }
     // constants
