@@ -50,7 +50,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     @Unique
     private int milked$eatAnimationTick;
     @Unique
-    private int particleCounter = 0;
+    private int milked$particleDripCounter = 0;
     @Unique
     private EatBlockGoal milked$eatBlockGoal;
 
@@ -189,8 +189,8 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     public void tick() {
         super.tick();
         if (!this.isBaby() && this.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
-            if (++this.particleCounter == 5) return;
-
+            if (++this.milked$particleDripCounter == 10) return;
+            milked$particleDripCounter = 0;
             // calculate the angle of its body and offset it by some amount.
             float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
             double x = this.getX() + Mth.cos(angleRad) * PARTICLE_SPAWN_OFFSET;
