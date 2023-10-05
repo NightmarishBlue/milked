@@ -19,7 +19,6 @@ public class LiquidSplashParticle extends WaterDropParticle {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprite;
 

@@ -61,7 +61,6 @@ public class LiquidDripParticle extends TextureSheetParticle {
     protected void postMoveUpdate() {
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class CoolingLiquidDripHangParticle extends LiquidDripHangParticle {
         CoolingLiquidDripHangParticle(ClientLevel p_106068_, double p_106069_, double p_106070_, double p_106071_, ParticleOptions p_106073_) {
             super(p_106068_, p_106069_, p_106070_, p_106071_, p_106073_);
@@ -75,7 +74,6 @@ public class LiquidDripParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class LiquidDripHangParticle extends LiquidDripParticle {
         private final ParticleOptions fallingParticle;
 
@@ -101,7 +99,6 @@ public class LiquidDripParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class LiquidDripLandParticle extends LiquidDripParticle {
         LiquidDripLandParticle(ClientLevel p_106102_, double p_106103_, double p_106104_, double p_106105_) {
             super(p_106102_, p_106103_, p_106104_, p_106105_);
@@ -109,7 +106,6 @@ public class LiquidDripParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class FallAndLandParticleLiquid extends FallingParticleLiquid {
         protected final ParticleOptions landParticle;
 
@@ -127,7 +123,6 @@ public class LiquidDripParticle extends TextureSheetParticle {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     static class FallingParticleLiquid extends LiquidDripParticle {
         FallingParticleLiquid(ClientLevel pLevel, double pX, double pY, double pZ) {
             this(pLevel, pX, pY, pZ, (int)(64.0D / (Math.random() * 0.8D + 0.2D)));

@@ -15,7 +15,6 @@ public class MilkDripParticle extends LiquidDripParticle{
         super(pLevel, pX, pY, pZ);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class MilkHangProvider implements ParticleProvider<SimpleParticleType> {
         protected final SpriteSet sprite;
 
@@ -31,7 +30,6 @@ public class MilkDripParticle extends LiquidDripParticle{
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class MilkFallProvider implements ParticleProvider<SimpleParticleType> {
         protected final SpriteSet sprite;
 
