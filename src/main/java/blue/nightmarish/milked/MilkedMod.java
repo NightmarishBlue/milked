@@ -109,6 +109,6 @@ public class MilkedMod
     public static final double PARTICLE_SPAWN_OFFSET = 0.45;
     public static final double PARTICLE_SPAWN_SPREAD = 0.15;
     public static int getDripLifetime() {
-        return new Random().nextInt(3, 10);
+        return new Random().nextInt(3, 6);
     }
 }

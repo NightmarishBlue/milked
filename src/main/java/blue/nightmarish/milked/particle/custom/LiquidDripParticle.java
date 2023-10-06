@@ -81,7 +81,7 @@ public class LiquidDripParticle extends TextureSheetParticle {
         LiquidDripHangParticle(ClientLevel pLevel, double pX, double pY, double pZ, ParticleOptions pFallingParticle, int lifetime) {
             super(pLevel, pX, pY, pZ);
             this.fallingParticle = pFallingParticle;
-            this.gravity *= 0.02F;
+            this.gravity *= 0.025F;
             this.lifetime = lifetime;
         }
 
