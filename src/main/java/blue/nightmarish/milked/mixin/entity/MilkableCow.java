@@ -90,12 +90,6 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     }
 
     @Override
-    protected void customServerAiStep() {
-        this.milked$eatAnimationTick = this.milked$eatBlockGoal.getEatAnimationTick();
-        super.customServerAiStep();
-    }
-
-    @Override
     public void aiStep() {
         if (this.level.isClientSide) {
             this.milked$eatAnimationTick = Math.max(0, this.milked$eatAnimationTick - 1);
