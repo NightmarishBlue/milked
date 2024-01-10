@@ -21,4 +21,8 @@ public interface IMilkableBehavior {
 
     float milked$getHeadEatPositionScale(float pPartialTick);
     float milked$getHeadEatAngleScale(float pPartialTick);
+
+    void milked$ageUp(int time);
+
+    boolean milked$shouldWeSpawnDrips();
 }
