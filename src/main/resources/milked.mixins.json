@@ -4,7 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8.0",
   "mixins": [
-    "entity.CowAnimalMethods",
+    "entity.parents.CowAnimalMethods",
     "entity.MilkableCow",
     "entity.MilkableMooshroom"
   ],

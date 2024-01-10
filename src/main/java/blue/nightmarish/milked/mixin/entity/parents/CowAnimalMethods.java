@@ -1,4 +1,4 @@
-package blue.nightmarish.milked.mixin.entity;
+package blue.nightmarish.milked.mixin.entity.parents;
 
 import blue.nightmarish.milked.IMilkableBehavior;
 import blue.nightmarish.milked.Util;
