@@ -1,6 +1,7 @@
 package blue.nightmarish.milked.mixin.entity;
 
 import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.Util;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
@@ -33,5 +34,18 @@ public abstract class CowAnimalMethods extends AgeableMob {
         int eatTicks = milkable.milked$getEatTicks();
         if (eatTicks >= 0)
             milkable.milked$setEatTicks(eatTicks - 1);
+    }
+
+    /**
+     * Handles an entity event fired from {@link net.minecraft.world.level.Level#broadcastEntityEvent}.
+     */
+    @Inject(method = "handleEntityEvent", at = @At("HEAD"), cancellable = true)
+    public void milked$handleEntityEvent(byte pId, CallbackInfo ci) {
+        if (!((Animal) (Object) this instanceof Cow)) return;
+        if (pId == 10) {
+            IMilkableBehavior milkable = (IMilkableBehavior) this;
+            milkable.milked$setEatTicks(Util.COW_EAT_ANIMATION_TICKS);
+            ci.cancel();
+        }
     }
 }

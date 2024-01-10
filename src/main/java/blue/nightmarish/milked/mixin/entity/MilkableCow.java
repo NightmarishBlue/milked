@@ -112,17 +112,6 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
         this.entityData.set(DATA_HAS_MILK, desiredState);
     }
 
-    /**
-     * Handles an entity event fired from {@link net.minecraft.world.level.Level#broadcastEntityEvent}.
-     */
-    @Override
-    public void handleEntityEvent(byte pId) {
-        if (pId == 10) {
-            this.milked$eatAnimationTick = EAT_ANIMATION_TICKS;
-        } else {
-            super.handleEntityEvent(pId);
-        }
-    }
 
     public float milked$getHeadEatPositionScale(float pPartialTick) {
         if (this.milked$eatAnimationTick <= 0) {
