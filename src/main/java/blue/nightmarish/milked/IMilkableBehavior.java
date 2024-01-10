@@ -8,7 +8,11 @@ public interface IMilkableBehavior {
     boolean milked$hasMilk();
     void milked$setMilk(boolean desiredState);
 
+    void milked$setEatTicks(int animationTicks);
+    EatBlockGoal milked$getEatGoal();
+
     Item milked$getMilkItem();
+
     EatBlockGoal milked$initGoal();
 
     ParticleOptions milked$getMilkParticles();

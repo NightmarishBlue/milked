@@ -49,10 +49,17 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     private static final EntityDataAccessor<Boolean> DATA_HAS_MILK = SynchedEntityData.defineId(MilkableCow.class, EntityDataSerializers.BOOLEAN);
     @Unique
     private int milked$eatAnimationTick;
+    public void milked$setEatTicks(int animationTicks) {
+        this.milked$eatAnimationTick = animationTicks;
+    }
+
     @Unique
     private int milked$particleDripCounter = 0;
     @Unique
     private EatBlockGoal milked$eatBlockGoal;
+    public EatBlockGoal milked$getEatGoal() {
+        return this.milked$eatBlockGoal;
+    }
 
     public EatBlockGoal milked$initGoal() {
         return new EatGrassGoal(this);
