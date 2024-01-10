@@ -2,6 +2,7 @@ package blue.nightmarish.milked.mixin.entity;
 
 import blue.nightmarish.milked.IMilkableBehavior;
 import blue.nightmarish.milked.Util;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Animal;
@@ -47,5 +48,22 @@ public abstract class CowAnimalMethods extends AgeableMob {
             milkable.milked$setEatTicks(Util.COW_EAT_ANIMATION_TICKS);
             ci.cancel();
         }
+    }
+
+    @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
+    public void milked$addAdditionalSaveData(CompoundTag pCompound, CallbackInfo ci) {
+        if (!((Animal) (Object) this instanceof Cow)) return;
+        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        pCompound.putBoolean("HasMilk", milkable.milked$hasMilk());
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
+    public void milked$readAdditionalSaveData(CompoundTag pCompound, CallbackInfo ci) {
+        if (!((Animal) (Object) this instanceof Cow)) return;
+        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        milkable.milked$setMilk(pCompound.getBoolean("HasMilk"));
     }
 }

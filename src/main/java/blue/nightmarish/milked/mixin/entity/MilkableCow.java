@@ -157,19 +157,6 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
         return offspring;
     }
 
-    public void addAdditionalSaveData(CompoundTag pCompound) {
-        super.addAdditionalSaveData(pCompound);
-        pCompound.putBoolean("HasMilk", this.milked$hasMilk());
-    }
-
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
-    public void readAdditionalSaveData(CompoundTag pCompound) {
-        super.readAdditionalSaveData(pCompound);
-        this.milked$setMilk(pCompound.getBoolean("HasMilk"));
-    }
-
     public void tick() {
         super.tick();
         if (!this.isBaby() && this.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
