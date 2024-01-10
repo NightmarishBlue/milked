@@ -93,14 +93,6 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
         this.entityData.define(DATA_HAS_MILK, true);
     }
 
-    @Override
-    public void aiStep() {
-        if (this.level.isClientSide) {
-            this.milked$eatAnimationTick = Math.max(0, this.milked$eatAnimationTick - 1);
-        }
-        super.aiStep();
-    }
-
     /**
      * Restores the cow's milkability, and ages it up slightly. This function is used in the
      * {@code GenericEatBlockGoal}.

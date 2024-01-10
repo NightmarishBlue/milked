@@ -21,6 +21,17 @@ public abstract class CowAnimalMethods extends AgeableMob {
     protected void milked$customServerAiStep(CallbackInfo ci) {
         if (!((Animal) (Object) this instanceof Cow)) return;
         IMilkableBehavior milkable = (IMilkableBehavior) this;
-        milkable.milked$setEatTicks(milkable.milked$getEatGoal().getEatAnimationTick());
+        milkable.milked$setEatTicks(milkable.milked$getEatGoal()
+                .getEatAnimationTick());
+    }
+
+    @Inject(method = "aiStep", at = @At("TAIL"))
+    public void milked$aiStep(CallbackInfo ci) {
+        if (!(((Animal) (Object) this instanceof Cow)
+                && this.level.isClientSide)) return;
+        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        int eatTicks = milkable.milked$getEatTicks();
+        if (eatTicks >= 0)
+            milkable.milked$setEatTicks(eatTicks - 1);
     }
 }
