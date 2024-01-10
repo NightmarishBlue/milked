@@ -123,7 +123,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     @Override
     public void handleEntityEvent(byte pId) {
         if (pId == 10) {
-            this.milked$eatAnimationTick = 40;
+            this.milked$eatAnimationTick = EAT_ANIMATION_TICKS;
         } else {
             super.handleEntityEvent(pId);
         }
