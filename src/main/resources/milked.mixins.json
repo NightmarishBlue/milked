@@ -5,6 +5,8 @@
   "minVersion": "0.8.0",
   "mixins": [
     "entity.parents.CowAnimalMethods",
+    "entity.data.ExposeAgeableMob",
+    "entity.data.CowData",
     "entity.MilkableCow",
     "entity.MilkableMooshroom"
   ],
