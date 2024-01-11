@@ -6,7 +6,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +28,7 @@ public abstract class CowMobMethods extends LivingEntity {
      */
     @Inject(method = "ate", at = @At("TAIL"))
     public void milked$ate(CallbackInfo ci) {
-        if (!((Animal) (Object) this instanceof Cow)) return;
+        if (!((Mob) (Object) this instanceof Cow)) return;
         IMilkableBehavior milkable = (IMilkableBehavior) this;
         milkable.milked$setMilk(true);
         if (this.isBaby()) {
@@ -39,7 +38,7 @@ public abstract class CowMobMethods extends LivingEntity {
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void milked$tick(CallbackInfo ci) {
-        if (!((Animal) (Object) this instanceof Cow)) return;
+        if (!((Mob) (Object) this instanceof Cow)) return;
         IMilkableBehavior milkable = (IMilkableBehavior) this;
         if (!this.isBaby() && milkable.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
             if (!milkable.milked$shouldWeSpawnDrips()) return;
