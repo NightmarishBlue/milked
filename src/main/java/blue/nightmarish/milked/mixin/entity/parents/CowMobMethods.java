@@ -18,7 +18,7 @@ import static blue.nightmarish.milked.MilkedMod.PARTICLE_SPAWN_OFFSET;
 import static blue.nightmarish.milked.MilkedMod.PARTICLE_SPAWN_SPREAD;
 
 @Mixin(Mob.class)
-public abstract class CowMobMethods extends LivingEntity implements IMilkableBehavior {
+public abstract class CowMobMethods extends LivingEntity {
     protected CowMobMethods(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }
@@ -39,14 +39,16 @@ public abstract class CowMobMethods extends LivingEntity implements IMilkableBeh
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void milked$tick(CallbackInfo ci) {
-        if (!this.isBaby() && this.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
-            if (!this.milked$shouldWeSpawnDrips()) return;
+        if (!((Animal) (Object) this instanceof Cow)) return;
+        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        if (!this.isBaby() && milkable.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
+            if (!milkable.milked$shouldWeSpawnDrips()) return;
             // calculate the angle of its body and offset it by some amount.
             float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
             double x = this.getX() + Mth.cos(angleRad) * PARTICLE_SPAWN_OFFSET;
             double z = this.getZ() + Mth.sin(angleRad) * PARTICLE_SPAWN_OFFSET;
             for (int i = 0; i < this.random.nextInt(2) + 1; ++i) {
-                Util.spawnFluidParticle(this.level, x - PARTICLE_SPAWN_SPREAD, x + PARTICLE_SPAWN_SPREAD, z - PARTICLE_SPAWN_SPREAD, z + PARTICLE_SPAWN_SPREAD, this.getY(0.5D), milked$getMilkParticles());
+                Util.spawnFluidParticle(this.level, x - PARTICLE_SPAWN_SPREAD, x + PARTICLE_SPAWN_SPREAD, z - PARTICLE_SPAWN_SPREAD, z + PARTICLE_SPAWN_SPREAD, this.getY(0.5D), milkable.milked$getMilkParticles());
             }
         }
     }

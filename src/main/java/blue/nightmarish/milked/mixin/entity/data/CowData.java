@@ -15,12 +15,14 @@ import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(Cow.class)
 public abstract class CowData extends ExposeAgeableMob implements IMilkableBehavior {
-    private static EntityDataAccessor<Boolean> milked$DATA_HAS_MILK = SynchedEntityData.defineId(CowData.class, EntityDataSerializers.BOOLEAN);
+    @Unique
+    private static final EntityDataAccessor<Boolean> milked$DATA_HAS_MILK = SynchedEntityData.defineId(CowData.class, EntityDataSerializers.BOOLEAN);
 
     protected CowData(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -28,7 +30,6 @@ public abstract class CowData extends ExposeAgeableMob implements IMilkableBehav
 
     @Override
     protected void milked$defineSynchedData(CallbackInfo callbackInfo) {
-        MilkedMod.LOGGER.info("fuuuck");
         this.entityData.define(milked$DATA_HAS_MILK, true);
     }
 
