@@ -32,7 +32,7 @@ public class GenericEatBlockGoal extends EatBlockGoal {
     public GenericEatBlockGoal(Mob pMob) {
         super(pMob);
         this.mob = pMob;
-        this.level = pMob.level;
+        this.level = pMob.level();
         initFields();
     }
 

@@ -1,7 +1,9 @@
 package blue.nightmarish.milked.mixin.entity.parents;
 
-import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.MilkableEntity;
 import blue.nightmarish.milked.Util;
+import blue.nightmarish.milked.networking.MilkMessages;
+import blue.nightmarish.milked.particle.MilkedModParticles;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,25 +31,32 @@ public abstract class CowMobMethods extends LivingEntity {
     @Inject(method = "ate", at = @At("TAIL"))
     public void milked$ate(CallbackInfo ci) {
         if (!((Mob) (Object) this instanceof Cow)) return;
-        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        MilkableEntity milkable = (MilkableEntity) this;
         milkable.milked$setMilk(true);
         if (this.isBaby()) {
             milkable.milked$ageUp(20);
         }
     }
 
+    // TODO: somewhere in here, we have to sync the data to the client.
     @Inject(method = "tick", at = @At("TAIL"))
     public void milked$tick(CallbackInfo ci) {
         if (!((Mob) (Object) this instanceof Cow)) return;
-        IMilkableBehavior milkable = (IMilkableBehavior) this;
-        if (!this.isBaby() && milkable.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
-            if (!milkable.milked$shouldWeSpawnDrips()) return;
-            // calculate the angle of its body and offset it by some amount.
-            float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
-            double x = this.getX() + Mth.cos(angleRad) * PARTICLE_SPAWN_OFFSET;
-            double z = this.getZ() + Mth.sin(angleRad) * PARTICLE_SPAWN_OFFSET;
-            for (int i = 0; i < this.random.nextInt(2) + 1; ++i) {
-                Util.spawnFluidParticle(this.level, x - PARTICLE_SPAWN_SPREAD, x + PARTICLE_SPAWN_SPREAD, z - PARTICLE_SPAWN_SPREAD, z + PARTICLE_SPAWN_SPREAD, this.getY(0.5D), milkable.milked$getMilkParticles());
+        MilkableEntity milkable = (MilkableEntity) this;
+        if (this.level().isClientSide()) {
+            if (!this.isBaby() && milkable.milked$hasMilk() && this.random.nextFloat() < 0.025F) {
+                if (!milkable.milked$shouldWeSpawnDrips()) return;
+                // calculate the angle of its body and offset it by some amount.
+                float angleRad = (this.yBodyRot - 90) * ((float) Math.PI / 180F);
+                double x = this.getX() + Mth.cos(angleRad) * PARTICLE_SPAWN_OFFSET;
+                double z = this.getZ() + Mth.sin(angleRad) * PARTICLE_SPAWN_OFFSET;
+                for (int i = 0; i < this.random.nextInt(2) + 1; ++i) {
+                    Util.spawnFluidParticle(this.level(), x - PARTICLE_SPAWN_SPREAD, x + PARTICLE_SPAWN_SPREAD, z - PARTICLE_SPAWN_SPREAD, z + PARTICLE_SPAWN_SPREAD, this.getY(0.5D), MilkedModParticles.DRIPPING_MILK.get());
+                }
+            }
+        } else {
+            if (this.tickCount % 200 == 0) {
+                MilkMessages.updateEntity(this, milkable.milked$hasMilk());
             }
         }
     }

@@ -6,8 +6,7 @@
   "mixins": [
     "entity.parents.CowMobMethods",
     "entity.parents.CowAnimalMethods",
-    "entity.data.ExposeAgeableMob",
-    "entity.data.CowData",
+    "entity.parents.CowAgeableMob",
     "entity.MilkableCow",
     "entity.MilkableMooshroom"
   ],

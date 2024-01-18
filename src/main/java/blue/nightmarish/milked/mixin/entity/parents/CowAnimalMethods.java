@@ -1,6 +1,6 @@
 package blue.nightmarish.milked.mixin.entity.parents;
 
-import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.MilkableEntity;
 import blue.nightmarish.milked.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.AgeableMob;
@@ -22,7 +22,7 @@ public abstract class CowAnimalMethods extends AgeableMob {
     @Inject(method = "customServerAiStep", at = @At("TAIL"))
     protected void milked$customServerAiStep(CallbackInfo ci) {
         if (!((Animal) (Object) this instanceof Cow)) return;
-        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        MilkableEntity milkable = (MilkableEntity) this;
         milkable.milked$setEatTicks(milkable.milked$getEatGoal()
                 .getEatAnimationTick());
     }
@@ -30,8 +30,8 @@ public abstract class CowAnimalMethods extends AgeableMob {
     @Inject(method = "aiStep", at = @At("TAIL"))
     public void milked$aiStep(CallbackInfo ci) {
         if (!(((Animal) (Object) this instanceof Cow)
-                && this.level.isClientSide)) return;
-        IMilkableBehavior milkable = (IMilkableBehavior) this;
+                && this.level().isClientSide)) return;
+        MilkableEntity milkable = (MilkableEntity) this;
         int eatTicks = milkable.milked$getEatTicks();
         if (eatTicks >= 0)
             milkable.milked$setEatTicks(eatTicks - 1);
@@ -44,7 +44,7 @@ public abstract class CowAnimalMethods extends AgeableMob {
     public void milked$handleEntityEvent(byte pId, CallbackInfo ci) {
         if (!((Animal) (Object) this instanceof Cow)) return;
         if (pId == 10) {
-            IMilkableBehavior milkable = (IMilkableBehavior) this;
+            MilkableEntity milkable = (MilkableEntity) this;
             milkable.milked$setEatTicks(Util.COW_EAT_ANIMATION_TICKS);
             ci.cancel();
         }
@@ -53,7 +53,7 @@ public abstract class CowAnimalMethods extends AgeableMob {
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     public void milked$addAdditionalSaveData(CompoundTag pCompound, CallbackInfo ci) {
         if (!((Animal) (Object) this instanceof Cow)) return;
-        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        MilkableEntity milkable = (MilkableEntity) this;
         pCompound.putBoolean("HasMilk", milkable.milked$hasMilk());
     }
 
@@ -63,7 +63,7 @@ public abstract class CowAnimalMethods extends AgeableMob {
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     public void milked$readAdditionalSaveData(CompoundTag pCompound, CallbackInfo ci) {
         if (!((Animal) (Object) this instanceof Cow)) return;
-        IMilkableBehavior milkable = (IMilkableBehavior) this;
+        MilkableEntity milkable = (MilkableEntity) this;
         milkable.milked$setMilk(pCompound.getBoolean("HasMilk"));
     }
 }

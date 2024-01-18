@@ -1,8 +1,9 @@
 package blue.nightmarish.milked.mixin.entity;
 
-import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.MilkableEntity;
 import blue.nightmarish.milked.Util;
 import blue.nightmarish.milked.entity.ai.EatGrassGoal;
+import blue.nightmarish.milked.networking.MilkMessages;
 import blue.nightmarish.milked.particle.MilkedModParticles;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
@@ -27,9 +28,20 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Cow.class)
-public abstract class MilkableCow extends Animal implements IMilkableBehavior {
+public abstract class MilkableCow extends Animal implements MilkableEntity {
     public MilkableCow(EntityType<? extends Cow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+    }
+
+    private boolean milked$hasMilk;
+
+    public boolean milked$hasMilk() {
+        return this.milked$hasMilk;
+    }
+
+    public void milked$setMilk(boolean state) {
+        if (!this.level().isClientSide()) MilkMessages.updateEntity(this, state);
+        this.milked$hasMilk = state;
     }
 
     @Unique
@@ -96,6 +108,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
 
     @Redirect(method = "mobInteract", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;is(Lnet/minecraft/world/item/Item;)Z"))
     public boolean modifyMobInteract(ItemStack heldItemStack, Item milkBucket) {
+        this.milked$setMilk(true);
         if (!(heldItemStack.is(this.milked$getMilkItem()) && this.milked$hasMilk() && !this.isBaby())) return false;
         this.milked$setMilk(false);
         return true;
@@ -108,7 +121,7 @@ public abstract class MilkableCow extends Animal implements IMilkableBehavior {
     )
     public Entity modifyBreedOffspring(EntityType<Cow> instance, Level pLevel) {
         Cow offspring = instance.create(pLevel);
-        ((IMilkableBehavior) offspring).milked$setMilk(true);
+        ((MilkableEntity) offspring).milked$setMilk(true);
         return offspring;
     }
 

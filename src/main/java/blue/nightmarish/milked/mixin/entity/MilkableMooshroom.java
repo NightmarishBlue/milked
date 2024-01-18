@@ -1,6 +1,6 @@
 package blue.nightmarish.milked.mixin.entity;
 
-import blue.nightmarish.milked.IMilkableBehavior;
+import blue.nightmarish.milked.MilkableEntity;
 import blue.nightmarish.milked.entity.ai.EatMyceliumGoal;
 import blue.nightmarish.milked.particle.MilkedModParticles;
 import net.minecraft.core.particles.ParticleOptions;
@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(MushroomCow.class)
-public abstract class MilkableMooshroom extends Cow implements IMilkableBehavior {
+public abstract class MilkableMooshroom extends Cow implements MilkableEntity {
     public MilkableMooshroom(EntityType<? extends Cow> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
     }

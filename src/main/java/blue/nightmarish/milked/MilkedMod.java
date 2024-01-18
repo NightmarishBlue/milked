@@ -1,5 +1,6 @@
 package blue.nightmarish.milked;
 
+import blue.nightmarish.milked.networking.MilkMessages;
 import blue.nightmarish.milked.particle.MilkedModParticles;
 import blue.nightmarish.milked.particle.custom.MilkDripParticle;
 import blue.nightmarish.milked.particle.custom.MilkSplashParticle;
@@ -67,6 +68,9 @@ public class MilkedMod
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
+        event.enqueueWork(() -> {
+            MilkMessages.register();
+        });
         // Some common setup code
         //LOGGER.info("HELLO FROM COMMON SETUP");
         //LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
@@ -96,19 +100,20 @@ public class MilkedMod
         public static void registerParticleFactories(final RegisterParticleProvidersEvent event) {
 //            Minecraft.getInstance().particleEngine.register(MilkedModParticles.FALLING_MILK,
 //                    LiquidSplashParticle.Provider::new);
-            event.register(MilkedModParticles.DRIPPING_MILK.get(), MilkDripParticle.MilkHangProvider::new);
-            event.register(MilkedModParticles.FALLING_MILK.get(), MilkDripParticle.MilkFallProvider::new);
-            event.register(MilkedModParticles.SPLASH_MILK.get(), MilkSplashParticle.Provider::new);
+            event.registerSpriteSet(MilkedModParticles.DRIPPING_MILK.get(), MilkDripParticle.MilkHangProvider::new);
+            event.registerSpriteSet(MilkedModParticles.FALLING_MILK.get(), MilkDripParticle.MilkFallProvider::new);
+            event.registerSpriteSet(MilkedModParticles.SPLASH_MILK.get(), MilkSplashParticle.Provider::new);
 
-            event.register(MilkedModParticles.DRIPPING_STEW.get(), StewDripParticle.StewHangProvider::new);
-            event.register(MilkedModParticles.FALLING_STEW.get(), StewDripParticle.StewFallProvider::new);
-            event.register(MilkedModParticles.STEW_SPLASH.get(), StewSplashParticle.Provider::new);
+            event.registerSpriteSet(MilkedModParticles.DRIPPING_STEW.get(), StewDripParticle.StewHangProvider::new);
+            event.registerSpriteSet(MilkedModParticles.FALLING_STEW.get(), StewDripParticle.StewFallProvider::new);
+            event.registerSpriteSet(MilkedModParticles.STEW_SPLASH.get(), StewSplashParticle.Provider::new);
         }
     }
     // constants
     public static final double PARTICLE_SPAWN_OFFSET = 0.45;
     public static final double PARTICLE_SPAWN_SPREAD = 0.15;
+    public static final Random random = new Random();
     public static int getDripLifetime() {
-        return new Random().nextInt(3, 6);
+        return random.nextInt(0, 2);
     }
 }
